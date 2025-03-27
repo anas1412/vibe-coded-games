@@ -229,36 +229,31 @@
         const noResultsMessage = document.getElementById('noResults');
 
         // --- STRUCTURED GAME DATA ---
-        // To add a new game:
-        // 1. Create the game's HTML file (e.g., my-new-game.html) inside a 'games' folder.
-        // 2. Add a new object to the `gamesData` array below with its details.
+        // (Keep your existing gamesData array here)
         const gamesData = [
-            {
-                id: 'rubik-cube',
-                title: 'Rubik Cube',
-                description: 'A simple game of matching colors on a cube.',
-                filePath: 'games/rubik-cube.html' // Example: Make sure this file exists
-            },
             {
                 id: 'tic-tac-toe',
                 title: 'Tic Tac Toe',
                 description: 'Classic X and O standoff.',
-                filePath: 'games/tictactoe.html' // Relative path from this HTML file
+                filePath: 'games/tictactoe.html'
             },
-
+            {
+                id: 'snake',
+                title: 'Simple Snake',
+                description: 'Consume pixels, avoid collisions.',
+                filePath: 'games/snake.html'
+            },
+            {
+                id: 'memory-match',
+                title: 'Memory Match',
+                description: 'Test your recall, find the pairs.',
+                filePath: 'games/memory.html'
+            }
             // --- ADD NEW GAME OBJECTS HERE ---
-            // Example:
-            // {
-            //     id: 'my-cool-game',
-            //     title: 'My Cool Game',
-            //     description: 'A brief description of the coolest game.',
-            //     filePath: 'games/my-cool-game.html'
-            // }
-            // ----------------------------------
         ];
         // ----------------------------
 
-        // Function to display games on the page
+        // Function to display games on the page (Updated)
         function displayGames(gamesToDisplay) {
             gameListContainer.innerHTML = ''; // Clear current list
 
@@ -269,19 +264,20 @@
                 gamesToDisplay.forEach(game => {
                     const gameItem = document.createElement('div');
                     gameItem.classList.add('game-item');
+                    // --- Added target="_blank" and rel="noopener noreferrer" to the link ---
                     gameItem.innerHTML = `
                         <div>
-                            <a href="${game.filePath}" title="Play ${game.title}">${game.title}</a>
+                            <a href="${game.filePath}" title="Play ${game.title}" target="_blank" rel="noopener noreferrer">${game.title}</a>
                             <p>${game.description}</p>
                         </div>
                     `;
-                    // We wrap content in div to better control layout within flex container if needed
+                    // --------------------------------------------------------------------
                     gameListContainer.appendChild(gameItem);
                 });
             }
         }
 
-        // Function to handle search input
+        // Function to handle search input (Keep this function as is)
         function handleSearch() {
             const searchTerm = searchInput.value.toLowerCase().trim();
 
@@ -293,10 +289,10 @@
             displayGames(filteredGames);
         }
 
-        // Initial display of all games
+        // Initial display of all games (Keep this as is)
         displayGames(gamesData);
 
-        // Add event listener for search input
+        // Add event listener for search input (Keep this as is)
         searchInput.addEventListener('input', handleSearch);
 
     </script>
