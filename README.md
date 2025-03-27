@@ -1,49 +1,38 @@
-# Interactive 3D Rubik's Cube
+# Anas' Vibe Coded Games
 
-A modern, interactive 3D Rubik's Cube web application built with Three.js. Experience smooth cube manipulation, theme customization, and intuitive controls right in your browser.
+A stylish web-based game portal featuring a collection of browser games with a Persona 5-inspired theme. Play classic games like Tic-tac-toe and Rubik's Cube in a modern, sleek interface.
 
 ## Features
 
-- **Interactive 3D Visualization**: Fully rendered 3D Rubik's Cube with smooth animations
-- **Intuitive Controls**: 
-  - Mouse/Touch drag for cube rotation
-  - Button controls for standard cube moves
-  - Scramble functionality
-  - One-click solve feature
-- **Theme Customization**: Multiple color themes to personalize your experience
-- **Responsive Design**: Works seamlessly across desktop and mobile devices
+- **Persona 5-Inspired Design**: Modern dark theme with red accents and dynamic hover effects
+- **Responsive Game Grid**: Automatically adjusts based on screen size
+- **Live Search**: Instantly filter games as you type
+- **Game Collection**:
+  - Rubik's Cube
+  - Tic-tac-toe
 
 ## Getting Started
 
-### Prerequisites
-
-- A modern web browser with WebGL support
-- Internet connection (for loading Three.js and other dependencies)
-
-### Installation
-
-1. Clone this repository or download the files
+1. Clone the repository
 2. Open `index.html` in your web browser
+3. Start playing!
 
-No additional installation or build steps required!
+## Adding New Games
 
-## Usage
+To add a new game:
 
-### Basic Controls
+1. Create your game's HTML file in the `games` folder
+2. Add game details to the `gamesData` array in `index.html`:
+```javascript
+{
+    id: 'your-game-id',
+    title: 'Your Game Title',
+    description: 'A brief description of your game.',
+    filePath: 'games/your-game.html'
+}
+```
 
-- **Rotate the Cube**: Click and drag anywhere on the cube
-- **Make Moves**: Use the move buttons (F, B, R, L, U, D)
-- **Scramble**: Click the scramble button for a random scramble
-- **Solve**: Use the solve button to return to solved state
-- **Reset**: Reset the cube to its initial solved state
-- **Change Theme**: Select from available theme options
+## Contact
 
-## Technologies Used
-
-- [Three.js](https://threejs.org/) - 3D graphics library
-- [Tween.js](https://github.com/tweenjs/tween.js/) - Animation library
-- [Font Awesome](https://fontawesome.com/) - Icons
-
-## License
-
-This project is open source and available under the MIT License.
+- Twitter: [@villainesthetic](https://twitter.com/villainesthetic)
+- GitHub: [anas1412](https://github.com/anas1412)
