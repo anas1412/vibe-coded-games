@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        #gameBoard {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 5px;
+            background-color: #333;
+            border: 5px solid #333;
+            margin-bottom: 20px;
+        }
+
+        .cell {
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            /* Prevent text selection */
+            color: #333;
+        }
+
+        .cell:hover {
+            background-color: #eee;
+        }
+
+        #status {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #444;
+            min-height: 1.5em;
+            /* Prevent layout shift */
+        }
+
+        #restartButton {
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+
+        #restartButton:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Tic Tac Toe</h1>
+    <div id="status">Player X's turn</div>
+    <div id="gameBoard">
+        <div class="cell" data-index="0"></div>
+        <div class="cell" data-index="1"></div>
+        <div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div>
+        <div class="cell" data-index="4"></div>
+        <div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div>
+        <div class="cell" data-index="7"></div>
+        <div class="cell" data-index="8"></div>
+    </div>
+    <button id="restartButton">Restart Game</button>
+
+    <script>
+        const statusDisplay = document.getElementById('status');
+        const gameBoard = document.getElementById('gameBoard');
+        const cells = document.querySelectorAll('.cell');
+        const restartButton = document.getElementById('restartButton');
+
+        let gameActive = true;
+        let currentPlayer = 'X';
+        let gameState = ["", "", "", "", "", "", "", "", ""]; // Represents the 3x3 board
+
+        const winningConditions = [
+            [0, 1, 2], // Rows
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6], // Columns
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8], // Diagonals
+            [2, 4, 6]
+        ];
+
+        const winMessage = () => `Player ${currentPlayer} has won!`;
+        const drawMessage = () => `Game ended in a draw!`;
+        const currentPlayerTurn = () => `Player ${currentPlayer}'s turn`;
+
+        // Initial setup
+        statusDisplay.textContent = currentPlayerTurn();
+
+        function handleCellPlayed(clickedCell, clickedCellIndex) {
+            gameState[clickedCellIndex] = currentPlayer;
+            clickedCell.textContent = currentPlayer;
+            // Optional: Add class for styling X and O differently if needed
+            // clickedCell.classList.add(currentPlayer === 'X' ? 'player-x' : 'player-o');
+        }
+
+        function handlePlayerChange() {
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            statusDisplay.textContent = currentPlayerTurn();
+        }
+
+        function handleResultValidation() {
+            let roundWon = false;
+            for (let i = 0; i < winningConditions.length; i++) {
+                const winCondition = winningConditions[i];
+                const a = gameState[winCondition[0]];
+                const b = gameState[winCondition[1]];
+                const c = gameState[winCondition[2]];
+
+                if (a === '' || b === '' || c === '') {
+                    continue; // Skip if any cell in the condition is empty
+                }
+                if (a === b && b === c) {
+                    roundWon = true;
+                    break; // Found a winner
+                }
+            }
+
+            if (roundWon) {
+                statusDisplay.textContent = winMessage();
+                gameActive = false;
+                return;
+            }
+
+            // Check for Draw (if no empty cells left and no winner)
+            const roundDraw = !gameState.includes("");
+            if (roundDraw) {
+                statusDisplay.textContent = drawMessage();
+                gameActive = false;
+                return;
+            }
+
+            // If game continues, change player
+            handlePlayerChange();
+        }
+
+        function handleCellClick(event) {
+            const clickedCell = event.target;
+            const clickedCellIndex = parseInt(clickedCell.getAttribute('data-index'));
+
+            // Check if cell is already played or game is inactive
+            if (gameState[clickedCellIndex] !== "" || !gameActive) {
+                return;
+            }
+
+            // Process the move
+            handleCellPlayed(clickedCell, clickedCellIndex);
+            handleResultValidation();
+        }
+
+        function handleRestartGame() {
+            gameActive = true;
+            currentPlayer = 'X';
+            gameState = ["", "", "", "", "", "", "", "", ""];
+            statusDisplay.textContent = currentPlayerTurn();
+            cells.forEach(cell => {
+                cell.textContent = "";
+                // Optional: Remove player-specific classes if added
+                // cell.classList.remove('player-x', 'player-o');
+            });
+        }
+
+        // Add event listeners
+        cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+        restartButton.addEventListener('click', handleRestartGame);
+
+    </script>
+
+</body>
+
+</html>
