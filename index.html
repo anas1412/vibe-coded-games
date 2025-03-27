@@ -4,433 +4,303 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Rubik's Cube - Themes</title>
-    <!-- Libraries -->
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js",
-                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.166.1/examples/jsm/"
-            }
-        }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/@tweenjs/tween.js@23.1.2/dist/tween.umd.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>Anas' Vibe Coded Games</title>
     <style>
-        body {
+        /* --- Global & Persona 5 Theme --- */
+        * {
+            box-sizing: border-box;
             margin: 0;
-            font-family: sans-serif;
-            background-color: #f0f0f0;
-            overflow: hidden;
-            cursor: grab;
+            padding: 0;
         }
 
-        body.dragging {
-            cursor: grabbing;
-        }
-
-        #container {
-            width: 100vw;
-            height: 100vh;
-            display: block;
-        }
-
-        #controls-container {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 10;
+        body {
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            /* Bold, impactful font */
+            background-color: #000000;
+            /* P5 Black */
+            color: #ffffff;
+            /* P5 White */
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
+            align-items: center;
+            min-height: 100vh;
         }
 
-        .button-group {
-            background: rgba(255, 255, 255, 0.8);
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        h1 {
+            color: #ff0000;
+            /* P5 Red */
+            font-size: 3em;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            text-shadow: 3px 3px 0px #000, 5px 5px 0px rgba(255, 255, 255, 0.3);
+            /* Outline/shadow effect */
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        /* --- Search --- */
+        #searchContainer {
+            margin-bottom: 40px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* More readable for input */
+            border: 3px solid #ff0000;
+            /* P5 Red border */
+            background-color: #1a1a1a;
+            /* Dark background */
+            color: #ffffff;
+            border-radius: 0;
+            /* Sharp edges */
+            outline: none;
+        }
+
+        #searchInput::placeholder {
+            color: #aaaaaa;
+            font-style: italic;
+        }
+
+        #searchInput:focus {
+            box-shadow: 0 0 10px #ff0000;
+            /* Glow effect */
+        }
+
+        /* --- Game Grid --- */
+        #gameList {
+            width: 100%;
+            max-width: 900px;
+            /* Allow grid to expand more */
             display: grid;
-            gap: 5px;
+            /* Responsive grid: as many columns as fit, min 200px, max 1fr */
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            /* Space between grid items */
+            margin-bottom: 40px;
         }
 
-        #move-controls {
-            grid-template-columns: repeat(3, auto);
-            max-width: 200px;
+        .game-item {
+            background-color: #1a1a1a;
+            /* Dark grey background */
+            border: 2px solid #333333;
+            /* Subtle border */
+            padding: 20px;
+            transition: transform 0.2s ease-out, border-color 0.2s ease-out;
+            position: relative;
+            overflow: hidden;
+            /* For potential future effects */
+            min-height: 120px;
+            /* Ensure items have some height */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
-        #action-controls {
-            grid-template-columns: 1fr;
+        .game-item::before {
+            /* Angled accent - P5 style */
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(255, 0, 0, 0.1);
+            /* Faint red accent */
+            transform: rotate(45deg);
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        /* --- New Theme Controls Style --- */
-        #theme-controls {
-            grid-template-columns: repeat(3, 1fr);
-            max-width: 200px;
+        .game-item:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: #ff0000;
+            /* Highlight border on hover */
         }
 
-        button {
-            padding: 8px 12px;
-            font-size: 1em;
-            cursor: pointer;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #e9e9e9;
-            color: #333;
-            min-width: 40px;
+        .game-item:hover::before {
+            opacity: 1;
+        }
+
+
+        .game-item a {
+            text-decoration: none;
+            color: #ffffff;
+            /* White title */
+            font-size: 1.6em;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+            position: relative;
+            /* Ensure text is above pseudo-element */
+            z-index: 1;
+            transition: color 0.2s ease;
+        }
+
+        .game-item a:hover {
+            color: #ff0000;
+            /* Red title on hover */
+            text-decoration: underline;
+            text-decoration-color: #ff0000;
+        }
+
+        .game-item p {
+            margin: 0;
+            color: #cccccc;
+            /* Lighter grey for description */
+            font-size: 0.95em;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* More readable font */
+            line-height: 1.4;
+            position: relative;
+            /* Ensure text is above pseudo-element */
+            z-index: 1;
+        }
+
+        /* --- Messages & Footer --- */
+        #noResults {
+            color: #ff0000;
+            /* P5 Red */
             text-align: center;
-            transition: background-color 0.2s, color 0.2s;
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-style: italic;
+            width: 100%;
         }
 
-        button:hover:not(:disabled) {
-            background-color: #d4d4d4;
-        }
-
-        button:disabled {
-            background-color: #f8f8f8;
-            color: #aaa;
-            cursor: not-allowed;
-        }
-
-        #randomize-btn {
-            background-color: #ffc107;
-            color: black;
-        }
-
-        #randomize-btn:hover:not(:disabled) {
-            background-color: #e0a800;
-        }
-
-        #solve-btn {
-            background-color: #17a2b8;
-            color: white;
-        }
-
-        #solve-btn:hover:not(:disabled) {
-            background-color: #138496;
-        }
-
-        #reset-btn {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        #reset-btn:hover:not(:disabled) {
-            background-color: #c82333;
-        }
-
-        /* --- Style for active theme button --- */
-        .theme-btn.active {
-            background-color: #6c757d;
-            color: white;
-            border-color: #5a6268;
-        }
-
-        #status {
-            margin-top: 5px;
+        footer {
+            margin-top: auto;
+            /* Push footer to bottom */
+            padding-top: 30px;
+            text-align: center;
             font-size: 0.9em;
-            color: #555;
-            min-height: 1.2em;
-            text-align: center;
+            color: #aaaaaa;
+            /* Grey for footer */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            width: 100%;
+        }
+
+        footer a {
+            color: #ff0000;
+            /* P5 Red for links */
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        footer a:hover {
+            color: #ffffff;
+            text-decoration: underline;
         }
     </style>
 </head>
 
 <body>
-    <div id="container"></div>
-    <div id="controls-container">
-        <div id="move-controls" class="button-group">
-            <!-- Move Buttons -->
-            <button class="move-btn" data-move="U">U</button> <button class="move-btn" data-move="F">F</button> <button
-                class="move-btn" data-move="R">R</button>
-            <button class="move-btn" data-move="U'">U'</button> <button class="move-btn" data-move="F'">F'</button>
-            <button class="move-btn" data-move="R'">R'</button>
-            <button class="move-btn" data-move="D">D</button> <button class="move-btn" data-move="B">B</button> <button
-                class="move-btn" data-move="L">L</button>
-            <button class="move-btn" data-move="D'">D'</button> <button class="move-btn" data-move="B'">B'</button>
-            <button class="move-btn" data-move="L'">L'</button>
-        </div>
-        <div id="action-controls" class="button-group">
-            <button id="randomize-btn">Randomize</button>
-            <button id="solve-btn" disabled>Solve</button>
-            <button id="reset-btn">Reset</button>
-            <div id="status">Ready</div>
-        </div>
-        <!-- New Theme Controls -->
-        <div id="theme-controls" class="button-group">
-            <button class="theme-btn" data-theme="white">White</button>
-            <button class="theme-btn" data-theme="grey">Grey</button>
-            <button class="theme-btn" data-theme="black">Black</button>
-        </div>
-        <div id="copyrighs" class="button-group">
-            <div style="text-align: center; margin-bottom: 10px;">
-                Made by <span style="font-weight: bold;">Anas B.</span>
-            </div>
-            <div style="display: flex; gap: 10px; justify-content: center;">
-                <a href="https://github.com/anas1412" target="_blank">
-                    <button style="background-color: #333; color: white;">
-                        <i class="fab fa-github"></i> GitHub
-                    </button>
-                </a>
-                <a href="https://twitter.com/villainesthetic" target="_blank">
-                    <button style="background-color: #1DA1F2; color: white;">
-                        <i class="fab fa-twitter"></i> Twitter
-                    </button>
-                </a>
-            </div>
 
-        </div>
+    <h1>Anas' Vibe Coded Games</h1>
+
+    <div id="searchContainer">
+        <input type="search" id="searchInput" placeholder="Search the Metaverse...">
     </div>
 
-    <script type="module">
-        import * as THREE from 'three';
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    <div id="gameList">
+        <!-- Game items will be loaded here by JavaScript -->
+    </div>
 
-        // --- Constants and Variables ---
-        let scene, camera, renderer, controls, raycaster;
-        let ambientLight, directionalLight; // Make lights accessible globally
-        const cubies = [];
-        const CUBIE_SIZE = 1; const SPACING = CUBIE_SIZE * 0.05;
-        const HALF_CUBE_SIZE = (CUBIE_SIZE * 3 + SPACING * 2) / 2;
-        const CUBE_CENTER_OFFSET = (CUBIE_SIZE + SPACING);
-        const EPSILON = 0.01; const ANIMATION_DURATION = 200;
-        const SCRAMBLE_LENGTH = 25;
-        let isAnimating = false;
-        const pivot = new THREE.Group();
-        let currentScrambleSequence = [];
-        let isDragging = false;
-        let dragStartPoint = new THREE.Vector2();
-        let intersectedObject = null; let intersectionPoint = null; let faceNormal = null;
-        let dragRotationAxis = null; let dragCubies = []; let currentDragAngle = 0;
-        const DRAG_SENSITIVITY = 2.5;
-        const statusElement = document.getElementById('status');
-        const container = document.getElementById('container');
-        const materials = { /* same materials */
-            white: new THREE.MeshStandardMaterial({ color: 0xffffff }), yellow: new THREE.MeshStandardMaterial({ color: 0xffff00 }),
-            red: new THREE.MeshStandardMaterial({ color: 0xB71C1C }), orange: new THREE.MeshStandardMaterial({ color: 0xFF6F00 }),
-            blue: new THREE.MeshStandardMaterial({ color: 0x0D47A1 }), green: new THREE.MeshStandardMaterial({ color: 0x2E7D32 }),
-            inner: new THREE.MeshStandardMaterial({ color: 0x333333 })
-        };
-        let currentTheme = 'grey'; // Track current theme
+    <div id="noResults" style="display: none;">Couldn't find that game... Try again?</div>
 
-        function init() {
-            // --- Scene, Camera, Renderer ---
-            scene = new THREE.Scene(); scene.add(pivot); // Background set in setTheme
-            camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(HALF_CUBE_SIZE * 2.5, HALF_CUBE_SIZE * 2, HALF_CUBE_SIZE * 3.5);
-            renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            container.appendChild(renderer.domElement);
+    <footer>
+        <p>Made by Anas (anas1412)</p>
+        <p>
+            <a href="https://twitter.com/villainesthetic" target="_blank" rel="noopener noreferrer">Twitter:
+                @villainesthetic</a> |
+            <a href="https://github.com/anas1412" target="_blank" rel="noopener noreferrer">GitHub: anas1412</a>
+        </p>
+    </footer>
 
-            // --- Lights (Define globally) ---
-            ambientLight = new THREE.AmbientLight(0xffffff, 0.8); scene.add(ambientLight);
-            directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
-            directionalLight.position.set(5, 10, 7.5); scene.add(directionalLight);
+    <script>
+        const gameListContainer = document.getElementById('gameList');
+        const searchInput = document.getElementById('searchInput');
+        const noResultsMessage = document.getElementById('noResults');
 
-            // --- Controls & Raycaster ---
-            controls = new OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true; controls.target.set(0, 0, 0); controls.enablePan = false;
-            raycaster = new THREE.Raycaster();
+        // --- STRUCTURED GAME DATA ---
+        // To add a new game:
+        // 1. Create the game's HTML file (e.g., my-new-game.html) inside a 'games' folder.
+        // 2. Add a new object to the `gamesData` array below with its details.
+        const gamesData = [
+            {
+                id: 'rubik-cube',
+                title: 'Rubik Cube',
+                description: 'A simple game of matching colors on a cube.',
+                filePath: 'games/rubik-cube.html' // Example: Make sure this file exists
+            },
+            {
+                id: 'tic-tac-toe',
+                title: 'Tic Tac Toe',
+                description: 'Classic X and O standoff.',
+                filePath: 'games/tictactoe.html' // Relative path from this HTML file
+            },
 
-            // --- Set Initial Theme ---
-            setTheme(currentTheme); // Apply default theme
+            // --- ADD NEW GAME OBJECTS HERE ---
+            // Example:
+            // {
+            //     id: 'my-cool-game',
+            //     title: 'My Cool Game',
+            //     description: 'A brief description of the coolest game.',
+            //     filePath: 'games/my-cool-game.html'
+            // }
+            // ----------------------------------
+        ];
+        // ----------------------------
 
-            createCube(); // Initial solved cube
+        // Function to display games on the page
+        function displayGames(gamesToDisplay) {
+            gameListContainer.innerHTML = ''; // Clear current list
 
-            // --- Setup Event Listeners ---
-            setupButtonListeners();
-            container.addEventListener('pointerdown', onPointerDown, false);
-            container.addEventListener('pointermove', onPointerMove, false);
-            container.addEventListener('pointerup', onPointerUp, false);
-            container.addEventListener('pointercancel', onPointerUp, false);
-            window.addEventListener('resize', onWindowResize, false);
-
-            animate();
-        }
-
-        function setupButtonListeners() {
-            // Move Buttons
-            document.querySelectorAll('.move-btn').forEach(button => {
-                button.addEventListener('click', () => { /* same listener */
-                    if (isAnimating || isDragging) return;
-                    const move = button.getAttribute('data-move');
-                    executeMoveSequence([move], () => {
-                        setStatus('Ready'); currentScrambleSequence = []; document.getElementById('solve-btn').disabled = true;
-                    });
+            if (gamesToDisplay.length === 0) {
+                noResultsMessage.style.display = 'block';
+            } else {
+                noResultsMessage.style.display = 'none';
+                gamesToDisplay.forEach(game => {
+                    const gameItem = document.createElement('div');
+                    gameItem.classList.add('game-item');
+                    gameItem.innerHTML = `
+                        <div>
+                            <a href="${game.filePath}" title="Play ${game.title}">${game.title}</a>
+                            <p>${game.description}</p>
+                        </div>
+                    `;
+                    // We wrap content in div to better control layout within flex container if needed
+                    gameListContainer.appendChild(gameItem);
                 });
-            });
-            // Action Buttons
-            document.getElementById('randomize-btn').addEventListener('click', handleRandomize);
-            document.getElementById('solve-btn').addEventListener('click', handleSolve);
-            document.getElementById('reset-btn').addEventListener('click', handleReset);
-            // Theme Buttons
-            document.querySelectorAll('.theme-btn').forEach(button => {
-                button.addEventListener('click', () => {
-                    if (isAnimating) return; // Prevent theme change during animation
-                    const theme = button.getAttribute('data-theme');
-                    setTheme(theme);
-                });
-            });
-        }
-
-        // --- NEW: Set Theme Function ---
-        function setTheme(themeName) {
-            if (!scene || !ambientLight || !directionalLight) return; // Ensure elements exist
-
-            console.log("Setting theme:", themeName);
-            currentTheme = themeName;
-
-            let bgColor, ambIntensity, dirIntensity, fog = null;
-
-            switch (themeName) {
-                case 'white':
-                    bgColor = new THREE.Color(0xf8f8f8);
-                    ambIntensity = 1.1;
-                    dirIntensity = 1.1;
-                    fog = null; // No fog
-                    document.body.style.backgroundColor = '#f8f8f8'; // Match body bg
-                    break;
-                case 'black':
-                    bgColor = new THREE.Color(0x111111); // Dark grey/near black
-                    ambIntensity = 0.4; // Lower ambient
-                    dirIntensity = 1.0; // Keep directional strong like a spotlight
-                    fog = new THREE.Fog(0x000000, HALF_CUBE_SIZE * 3, HALF_CUBE_SIZE * 10); // Black fog, adjust near/far
-                    document.body.style.backgroundColor = '#111111';
-                    break;
-                case 'grey':
-                default: // Default to grey
-                    bgColor = new THREE.Color(0x808080);
-                    ambIntensity = 0.8;
-                    dirIntensity = 1.0;
-                    fog = null; // No fog
-                    document.body.style.backgroundColor = '#f0f0f0';
-                    break;
-            }
-
-            scene.background = bgColor;
-            ambientLight.intensity = ambIntensity;
-            directionalLight.intensity = dirIntensity;
-            scene.fog = fog;
-
-            // Update active button style
-            document.querySelectorAll('.theme-btn').forEach(btn => {
-                if (btn.getAttribute('data-theme') === themeName) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-        }
-
-
-        // --- Core Functions (createCube, getCubieMaterial, rotateLayerPromise, detachCubies, executeMoveSequence, getRotationParamsFromMove) ---
-        // ... These functions remain exactly the same as the previous version ...
-        function createCube() {
-            cubies.forEach(c => scene.remove(c)); cubies.length = 0;
-            const geometry = new THREE.BoxGeometry(CUBIE_SIZE, CUBIE_SIZE, CUBIE_SIZE);
-            for (let x = -1; x <= 1; x++) {
-                for (let y = -1; y <= 1; y++) {
-                    for (let z = -1; z <= 1; z++) {
-                        if (x === 0 && y === 0 && z === 0) continue;
-                        const position = new THREE.Vector3(x * (CUBIE_SIZE + SPACING), y * (CUBIE_SIZE + SPACING), z * (CUBIE_SIZE + SPACING));
-                        const cubie = new THREE.Mesh(geometry, getCubieMaterial(x, y, z));
-                        cubie.position.copy(position); cubie.rotation.set(0, 0, 0); scene.add(cubie); cubies.push(cubie);
-                    }
-                }
-            }
-            currentScrambleSequence = []; document.getElementById('solve-btn').disabled = true; setStatus("Ready");
-        }
-        function getCubieMaterial(x, y, z) {
-            return [(x === 1) ? materials.red : materials.inner, (x === -1) ? materials.orange : materials.inner, (y === 1) ? materials.white : materials.inner, (y === -1) ? materials.yellow : materials.inner, (z === 1) ? materials.green : materials.inner, (z === -1) ? materials.blue : materials.inner];
-        }
-        function rotateLayerPromise(cubiesToRotate, axis, angle) {
-            return new Promise((resolve) => {
-                pivot.rotation.set(0, 0, 0); pivot.updateMatrixWorld(); cubiesToRotate.forEach(cubie => pivot.attach(cubie));
-                const startRotation = { theta: 0 };
-                new TWEEN.Tween(startRotation).to({ theta: angle }, ANIMATION_DURATION).easing(TWEEN.Easing.Quadratic.Out).onUpdate(() => {
-                    if (axis === 'x') pivot.rotation.x = startRotation.theta; else if (axis === 'y') pivot.rotation.y = startRotation.theta; else if (axis === 'z') pivot.rotation.z = startRotation.theta;
-                }).onComplete(() => { detachCubies(cubiesToRotate); resolve(); }).start();
-            });
-        }
-        function detachCubies(cubiesToDetach) {
-            pivot.updateMatrixWorld(); cubiesToDetach.forEach(cubie => { if (cubie.parent === pivot) { cubie.updateMatrixWorld(); scene.attach(cubie); } }); pivot.rotation.set(0, 0, 0);
-        }
-        async function executeMoveSequence(sequence, onCompleteCallback = null) {
-            if (isAnimating) { setStatus("Busy..."); return; }
-            isAnimating = true; setButtonsEnabled(false); console.log("Executing sequence:", sequence.join(' ')); setStatus(`Running: ${sequence.length} moves...`);
-            for (let i = 0; i < sequence.length; i++) {
-                const move = sequence[i]; setStatus(`Running: ${move} (${i + 1}/${sequence.length})`); const { cubiesToRotate, axis, angle } = getRotationParamsFromMove(move);
-                if (!cubiesToRotate || cubiesToRotate.length === 0) { console.warn("Skipping invalid move:", move); continue; }
-                try { await rotateLayerPromise(cubiesToRotate, axis, angle); } catch (error) { console.error(`Error during ${move}:`, error); setStatus(`Error on move ${move}`); isAnimating = false; setButtonsEnabled(true); return; }
-            }
-            console.log("Sequence complete."); isAnimating = false; setButtonsEnabled(true); setStatus("Ready"); if (onCompleteCallback) { onCompleteCallback(); }
-        }
-        function getRotationParamsFromMove(move) {
-            const layerCoord = CUBE_CENTER_OFFSET; let cubiesToRotate = []; let axis = null; let angle = Math.PI / 2;
-            const moveUpper = move.toUpperCase().replace("'", "");
-            if (['R', 'L'].includes(moveUpper)) axis = 'x'; else if (['U', 'D'].includes(moveUpper)) axis = 'y'; else if (['F', 'B'].includes(moveUpper)) axis = 'z';
-            if (!axis) return { cubiesToRotate: [], axis: null, angle: 0 };
-            cubies.forEach(c => {
-                if (axis === 'x') { if ((moveUpper === 'R' && Math.abs(c.position.x - layerCoord) < EPSILON) || (moveUpper === 'L' && Math.abs(c.position.x + layerCoord) < EPSILON)) cubiesToRotate.push(c); }
-                else if (axis === 'y') { if ((moveUpper === 'U' && Math.abs(c.position.y - layerCoord) < EPSILON) || (moveUpper === 'D' && Math.abs(c.position.y + layerCoord) < EPSILON)) cubiesToRotate.push(c); }
-                else if (axis === 'z') { if ((moveUpper === 'F' && Math.abs(c.position.z - layerCoord) < EPSILON) || (moveUpper === 'B' && Math.abs(c.position.z + layerCoord) < EPSILON)) cubiesToRotate.push(c); }
-            });
-            if (move.includes("'")) angle = -angle; if (['R', 'U', 'F'].includes(moveUpper)) angle = -angle;
-            return { cubiesToRotate, axis, angle };
-        }
-
-        // --- Mouse Drag Handlers --- (Same as before)
-        function onPointerDown(event) { /* ... */
-            if (isAnimating || event.button !== 0) return; const pointer = new THREE.Vector2(); pointer.x = (event.clientX / window.innerWidth) * 2 - 1; pointer.y = -(event.clientY / window.innerHeight) * 2 + 1; raycaster.setFromCamera(pointer, camera); const intersects = raycaster.intersectObjects(cubies);
-            if (intersects.length > 0) {
-                isDragging = true; document.body.classList.add('dragging'); controls.enabled = false; intersectedObject = intersects[0].object; intersectionPoint = intersects[0].point; faceNormal = intersects[0].face.normal.clone(); faceNormal.transformDirection(intersectedObject.matrixWorld).round(); dragStartPoint.set(event.clientX, event.clientY); currentDragAngle = 0;
-                if (Math.abs(faceNormal.x) > 0.5) dragRotationAxis = 'x'; else if (Math.abs(faceNormal.y) > 0.5) dragRotationAxis = 'y'; else if (Math.abs(faceNormal.z) > 0.5) dragRotationAxis = 'z'; else { console.error("Bad normal", faceNormal); isDragging = false; document.body.classList.remove('dragging'); controls.enabled = true; return; } const coord = intersectedObject.position[dragRotationAxis]; dragCubies = cubies.filter(c => Math.abs(c.position[dragRotationAxis] - coord) < EPSILON);
-                if (dragCubies.length === 0) { console.error("Failed selecting drag cubies"); isDragging = false; document.body.classList.remove('dragging'); controls.enabled = true; return; } pivot.rotation.set(0, 0, 0); pivot.updateMatrixWorld(); dragCubies.forEach(cubie => pivot.attach(cubie)); console.log(`Drag Start: Axis=${dragRotationAxis}, Normal=${faceNormal.toArray().join(',')}, Cubies=${dragCubies.length}`);
             }
         }
-        function onPointerMove(event) { /* ... */
-            if (!isDragging || isAnimating) return; const currentPoint = new THREE.Vector2(event.clientX, event.clientY); const deltaMove = currentPoint.clone().sub(dragStartPoint); let rotationAmount = 0;
-            if (dragRotationAxis === 'y') { rotationAmount = deltaMove.x; if (faceNormal.y < 0) rotationAmount *= -1; } else if (dragRotationAxis === 'x') { rotationAmount = -deltaMove.y; if (faceNormal.x < 0) rotationAmount *= -1; } else { rotationAmount = -deltaMove.y; if (faceNormal.z < 0) rotationAmount *= -1; } currentDragAngle = (rotationAmount * DRAG_SENSITIVITY * Math.PI) / 180;
-            if (dragRotationAxis === 'x') pivot.rotation.x = currentDragAngle; else if (dragRotationAxis === 'y') pivot.rotation.y = currentDragAngle; else if (dragRotationAxis === 'z') pivot.rotation.z = currentDragAngle;
-        }
-        function onPointerUp(event) { /* ... */
-            if (!isDragging) return; isDragging = false; document.body.classList.remove('dragging'); controls.enabled = true; if (dragCubies.length === 0) { console.warn("PointerUp no dragCubies"); return; } const angle = currentDragAngle; const snapAngle = Math.round(angle / (Math.PI / 2)) * (Math.PI / 2); const angleDiff = snapAngle - angle; isAnimating = true; setButtonsEnabled(false);
-            const startRot = { theta: angle }; new TWEEN.Tween(startRot).to({ theta: snapAngle }, Math.abs(angleDiff * 100) + 50).easing(TWEEN.Easing.Quadratic.Out).onUpdate(() => { if (dragRotationAxis === 'x') pivot.rotation.x = startRot.theta; else if (dragRotationAxis === 'y') pivot.rotation.y = startRot.theta; else if (dragRotationAxis === 'z') pivot.rotation.z = startRot.theta; }).onComplete(() => { detachCubies(dragCubies); isAnimating = false; setButtonsEnabled(true); setStatus("Ready"); intersectedObject = null; intersectionPoint = null; faceNormal = null; dragRotationAxis = null; dragCubies = []; currentDragAngle = 0; if (Math.abs(snapAngle) > EPSILON) { currentScrambleSequence = []; document.getElementById('solve-btn').disabled = true; } }).start();
+
+        // Function to handle search input
+        function handleSearch() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+
+            const filteredGames = gamesData.filter(game =>
+                game.title.toLowerCase().includes(searchTerm) ||
+                game.description.toLowerCase().includes(searchTerm)
+            );
+
+            displayGames(filteredGames);
         }
 
-        // --- Action Handlers (Randomize, Solve, Reset) ---
-        function handleRandomize() { /* ... */
-            if (isAnimating || isDragging) return; const moves = ["U", "D", "L", "R", "F", "B"]; const modifiers = ["", "'"]; const randomSequence = []; for (let i = 0; i < SCRAMBLE_LENGTH; i++) { randomSequence.push(moves[Math.floor(Math.random() * moves.length)] + modifiers[Math.floor(Math.random() * modifiers.length)]); } currentScrambleSequence = randomSequence; document.getElementById('solve-btn').disabled = true; executeMoveSequence(randomSequence, () => { setStatus('Scrambled. Ready.'); document.getElementById('solve-btn').disabled = false; });
-        }
-        function handleSolve() { /* ... */
-            if (isAnimating || isDragging || currentScrambleSequence.length === 0) { if (currentScrambleSequence.length === 0) setStatus("Nothing to solve."); return; } const inverseSequence = currentScrambleSequence.map(invertMove).reverse(); console.log("Calculated inverse:", inverseSequence.join(' ')); currentScrambleSequence = []; document.getElementById('solve-btn').disabled = true; executeMoveSequence(inverseSequence, () => { setStatus('Solved! Ready.'); });
-        }
-        function handleReset() { /* ... */
-            if (isAnimating || isDragging) return; console.log("Resetting cube..."); setStatus("Resetting..."); isAnimating = true; setButtonsEnabled(false);
-            createCube(); // Recreate the cube visually and reset state
-            setTimeout(() => { isAnimating = false; setButtonsEnabled(true); setStatus("Cube Reset. Ready."); }, 50);
-        }
-        function invertMove(move) { /* ... */ if (move.endsWith("'")) return move.slice(0, -1); else if (move.endsWith("2")) return move; else return move + "'"; }
+        // Initial display of all games
+        displayGames(gamesData);
 
-        // --- Util Functions ---
-        function setButtonsEnabled(enabled) {
-            // Now includes theme buttons in disabling logic
-            const solveButton = document.getElementById('solve-btn');
-            document.querySelectorAll('button').forEach(button => { button.disabled = !enabled; });
-            if (enabled && currentScrambleSequence.length === 0) { solveButton.disabled = true; }
-        }
-        function setStatus(text) { statusElement.textContent = text; }
-        function onWindowResize() { /* ... */ camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); }
-        function animate(time) { /* ... */ requestAnimationFrame(animate); TWEEN.update(time); controls.update(); renderer.render(scene, camera); }
-
-        // --- Initialize ---
-        init();
+        // Add event listener for search input
+        searchInput.addEventListener('input', handleSearch);
 
     </script>
+
 </body>
 
 </html>
